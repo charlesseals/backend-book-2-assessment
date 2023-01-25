@@ -7,11 +7,11 @@ def get_all_snakes(query_params):
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
         sort_by = ""
+        where_clause = ""
         if len(query_params) != 0:
             param = query_params[0]
             [qs_key, qs_value] = param.split("=")
 
-            where_clause = ""
             if qs_key == "species":
                 if qs_value == '1':
                     sort_by = " ORDER BY sp.name"
@@ -29,11 +29,14 @@ def get_all_snakes(query_params):
                     sort_by = " ORDER BY sp.name"
                     where_clause = f"WHERE s.species_id = {qs_value}"
 
+
             # elif qs_key == "status":
             #     if qs_value == 'Treatment':
             #         sort_by = " ORDER BY status"
             #         where_clause = f"WHERE a.status = \'{qs_value}\'"
-        
+        # else:
+        #     where_clause = ""
+
 
         sql_to_execute = f"""
         SELECT
@@ -71,9 +74,17 @@ def get_single_snake(id):
             s.owner_id,
             s.species_id,
             s.gender,
+            s.color,
+            sp.id,
+            sp.name
         FROM Snakes s
-        WHERE s.id = ?
+        JOIN `Species` sp
+            on sp.id = s.species_id
+        WHERE s.id = ? and s.species_id != 2
         """, ( id, ))
         data = db_cursor.fetchone()
-        snake = Snake(data['id'], data['name'], data['owner_id'], data['species_id'], data['gender'], data['color'])
+        if data is None:
+            return ""
+        else:
+            snake = Snake(data['id'], data['name'], data['owner_id'], data['species_id'], data['gender'], data['color'])
     return snake.__dict__

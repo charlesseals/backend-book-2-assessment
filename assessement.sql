@@ -102,3 +102,21 @@ insert into Snakes (id, name, owner_id, species_id, gender, color) values (30, '
             on sp.id = s.species_id
 		WHERE s.species_id = 4
             ORDER BY sp.name
+
+        SELECT
+            s.id,
+            s.name,
+            s.owner_id,
+            s.species_id,
+            s.gender,
+            s.color,
+            sp.id,
+            sp.name
+        FROM Snakes s
+        JOIN `Species` sp
+            on sp.id = s.species_id
+        WHERE s.id = 1 and s.species_id != 2
+
+
+        SELECT *
+        FROM Snakes

@@ -65,7 +65,10 @@ class HandleRequests(BaseHTTPRequestHandler):
                 else:
                     response = get_all_snakes(query_params)
 
-            if success:
+            if response == "":
+                self._set_headers(405)
+                response = ""
+            elif success:
                 self._set_headers(200)
             else:
                 self._set_headers(404)
