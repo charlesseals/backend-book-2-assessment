@@ -1,7 +1,7 @@
 from urllib.parse import urlparse, parse_qs
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_specieses
+from views import get_all_specieses, get_single_species
 
 # Here's a class. It inherits from another class.
 # For now, think of a class as a container for functions that
@@ -66,6 +66,40 @@ class HandleRequests(BaseHTTPRequestHandler):
 
 
         self.wfile.write(json.dumps(response).encode())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
 
     def _set_headers(self, status):
         # Notice this Docstring also includes information about the arguments passed to the function
