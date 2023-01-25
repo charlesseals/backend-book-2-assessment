@@ -63,3 +63,42 @@ insert into Snakes (id, name, owner_id, species_id, gender, color) values (27, '
 insert into Snakes (id, name, owner_id, species_id, gender, color) values (28, 'Andréanne', 5, 4, 'Female', 'Green');
 insert into Snakes (id, name, owner_id, species_id, gender, color) values (29, 'Stéphanie', 8, 5, 'Female', 'Purple');
 insert into Snakes (id, name, owner_id, species_id, gender, color) values (30, 'Liè', 7, 1, 'Female', 'Maroon');
+
+
+
+
+        SELECT
+            s.id,
+            s.name,
+            s.owner_id,
+            s.species_id,
+            s.gender,
+            s.color,
+            sp.id,
+            sp.name
+        FROM Snakes s
+        JOIN `Species` sp
+            on sp.id = s.species_id
+
+
+        SELECT
+            s.id,
+            s.name
+        FROM species s
+        WHERE s.id = 3
+
+
+        SELECT
+            s.id,
+            s.name,
+            s.owner_id,
+            s.species_id,
+            s.gender,
+            s.color,
+            sp.id,
+            sp.name
+        FROM Snakes s
+        JOIN `Species` sp
+            on sp.id = s.species_id
+		WHERE s.species_id = 4
+            ORDER BY sp.name

@@ -10,21 +10,24 @@ from views import get_all_specieses, get_single_species, get_single_snake, get_a
 class HandleRequests(BaseHTTPRequestHandler):
 
     def parse_url(self, path):
-        """Parse the url into the resource and id"""
-        parsed_url = urlparse(path)
-        path_params = parsed_url.path.split('/')  # ['', 'animals', 1]
-        resource = path_params[1]
+        url_components = urlparse(path)
+        path_params = url_components.path.strip("/").split("/")
+        query_params = []
 
-        if parsed_url.query:
-            query = parse_qs(parsed_url.query)
-            return (resource, query)
+        if url_components.query != '':
+            query_params = url_components.query.split("&")
 
-        pk = None
+        resource = path_params[0]
+        id = None
+
         try:
-            pk = int(path_params[2])
-        except (IndexError, ValueError):
-            pass
-        return (resource, pk)    # This is a Docstring it should be at the beginning of all classes and functions
+            id = int(path_params[1])
+        except IndexError:
+            pass  # No route parameter exists: /animals
+        except ValueError:
+            pass  # Request had trailing slash: /animals/
+
+        return (resource, id, query_params)    # This is a Docstring it should be at the beginning of all classes and functions
     # It gives a description of the class or function
     # """Controls the functionality of any GET, PUT, POST, DELETE requests to the server
     # """
@@ -44,7 +47,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         # If the path does not include a query parameter, continue with the original if block
         if '?' not in self.path:
             # (resource, id, query_params) = parsed
-            (resource, id) = parsed
+            (resource, id, query_params) = parsed
 
             success = False
 
@@ -60,7 +63,7 @@ class HandleRequests(BaseHTTPRequestHandler):
                 if id is not None:
                     response = get_single_snake(id)
                 else:
-                    response = get_all_snakes()
+                    response = get_all_snakes(query_params)
 
             if success:
                 self._set_headers(200)
@@ -71,16 +74,27 @@ class HandleRequests(BaseHTTPRequestHandler):
 
 
         else: # There is a ? in the path, run the query param functions
-            (resource, query) = parsed
+            (resource, query, query_params) = parsed
 
             # see if the query dictionary has an email key
             if resource == 'species':
+                success = True
                 response = get_all_specieses()
+
+            elif resource == "snakes":
+                success = True
+                response = get_all_snakes(query_params)
+
     
+            if success:
+                self._set_headers(200)
+            else:
+                self._set_headers(404)
+                response = ""
+
 
             # elif resource == 'location':
             #     response = get_species_by_location(query_params][0])
-
 
 
         self.wfile.write(json.dumps(response).encode())

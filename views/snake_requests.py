@@ -2,20 +2,56 @@ import sqlite3
 import json
 from models import Snake
 
-def get_all_snakes():
+def get_all_snakes(query_params):
     with sqlite3.connect("./assessment.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
-        db_cursor.execute("""
+        sort_by = ""
+        if len(query_params) != 0:
+            param = query_params[0]
+            [qs_key, qs_value] = param.split("=")
+
+            where_clause = ""
+            if qs_key == "species":
+                if qs_value == '1':
+                    sort_by = " ORDER BY sp.name"
+                    where_clause = f"WHERE s.species_id = {qs_value}"
+                elif qs_value == '2':
+                    sort_by = " ORDER BY sp.name"
+                    where_clause = f"WHERE s.species_id = {qs_value}"
+                elif qs_value == '3':
+                    sort_by = " ORDER BY sp.name"
+                    where_clause = f"WHERE s.species_id = {qs_value}"
+                elif qs_value == '4':
+                    sort_by = " ORDER BY sp.name"
+                    where_clause = f"WHERE s.species_id = {qs_value}"
+                elif qs_value == '5':
+                    sort_by = " ORDER BY sp.name"
+                    where_clause = f"WHERE s.species_id = {qs_value}"
+
+            # elif qs_key == "status":
+            #     if qs_value == 'Treatment':
+            #         sort_by = " ORDER BY status"
+            #         where_clause = f"WHERE a.status = \'{qs_value}\'"
+        
+
+        sql_to_execute = f"""
         SELECT
             s.id,
             s.name,
             s.owner_id,
             s.species_id,
             s.gender,
-            s.color
+            s.color,
+            sp.id,
+            sp.name
         FROM Snakes s
-        """)
+        JOIN `Species` sp
+            on sp.id = s.species_id
+            {where_clause}
+            {sort_by}
+        """
+        db_cursor.execute(sql_to_execute)
         snakes = []
         dataset = db_cursor.fetchall()
         for row in dataset:
