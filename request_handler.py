@@ -1,7 +1,7 @@
 from urllib.parse import urlparse, parse_qs
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_specieses, get_single_species
+from views import get_all_specieses, get_single_species, get_single_snake, get_all_snakes
 
 # Here's a class. It inherits from another class.
 # For now, think of a class as a container for functions that
@@ -45,18 +45,29 @@ class HandleRequests(BaseHTTPRequestHandler):
         if '?' not in self.path:
             # (resource, id, query_params) = parsed
             (resource, id) = parsed
-            # success = False
+
+            success = False
 
             if resource == "species":
+                success = True
                 if id is not None:
                     response = get_single_species(id)
-                    self._set_headers(200)
                 else:
                     response = get_all_specieses()
-                    self._set_headers(200)
-            if resource != "species":
-                response = ""
+
+            elif resource == "snakes":
+                success = True
+                if id is not None:
+                    response = get_single_snake(id)
+                else:
+                    response = get_all_snakes()
+
+            if success:
+                self._set_headers(200)
+            else:
                 self._set_headers(404)
+                response = ""
+
 
 
         else: # There is a ? in the path, run the query param functions
