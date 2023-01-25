@@ -34,7 +34,7 @@ class HandleRequests(BaseHTTPRequestHandler):
     # Here's a method on the class that overrides the parent's method.
     # It handles any GET request.
     def do_GET(self):
-        self._set_headers(200)
+        # self._set_headers(200)
 
         response = {}
 
@@ -45,12 +45,19 @@ class HandleRequests(BaseHTTPRequestHandler):
         if '?' not in self.path:
             # (resource, id, query_params) = parsed
             (resource, id) = parsed
+            # success = False
 
             if resource == "species":
                 if id is not None:
                     response = get_single_species(id)
+                    self._set_headers(200)
                 else:
                     response = get_all_specieses()
+                    self._set_headers(200)
+            if resource != "species":
+                response = ""
+                self._set_headers(404)
+
 
         else: # There is a ? in the path, run the query param functions
             (resource, query) = parsed
