@@ -1,1 +1,1 @@
-from .species_requests import get_all_specieses
+from .species_requests import get_all_specieses, get_single_species
