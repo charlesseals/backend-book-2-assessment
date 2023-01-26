@@ -92,7 +92,6 @@ def get_single_snake(id):
 def create_snake(new_snake):
     with sqlite3.connect("./assessment.sqlite3") as conn:
         db_cursor = conn.cursor()
-
         db_cursor.execute("""
         INSERT INTO Snakes
             ( name, owner_id, species_id, gender, color )
@@ -105,6 +104,4 @@ def create_snake(new_snake):
         id = db_cursor.lastrowid
 
         new_snake['id'] = id
-
-
     return new_snake
