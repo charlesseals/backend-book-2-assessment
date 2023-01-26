@@ -1,12 +1,8 @@
 from urllib.parse import urlparse, parse_qs
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_specieses, get_single_species, get_single_snake, get_all_snakes, create_snake
+from views import get_all_specieses, get_single_species, get_single_snake, get_all_snakes, create_snake, get_all_owners, get_single_owner
 
-# Here's a class. It inherits from another class.
-# For now, think of a class as a container for functions that
-# work together for a common purpose. In this case, that
-# common purpose is to respond to HTTP requests from a client.
 class HandleRequests(BaseHTTPRequestHandler):
 
     def parse_url(self, path):
@@ -64,6 +60,13 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = get_single_snake(id)
                 else:
                     response = get_all_snakes(query_params)
+            elif resource == "owners":
+                success = True
+                if id is not None:
+                    response = get_single_owner(id)
+                else:
+                    response = get_all_owners()
+
 
             if response == "":
                 self._set_headers(405)
