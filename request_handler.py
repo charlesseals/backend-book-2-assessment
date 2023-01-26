@@ -105,7 +105,7 @@ class HandleRequests(BaseHTTPRequestHandler):
 
 
     def do_POST(self):
-        self._set_headers(201)
+        # self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
 
@@ -113,19 +113,43 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         (resource, id, query_params) = self.parse_url(self.path)
 
+        # key_test = False
         new_resource = None
 
         if resource == "snakes":
-            new_resource = create_snake(post_body)
+            # new_resource = ""
+            # if list(post_body.keys())[list(post_body.values()).index(post_body['name'])] == 'name' and list(post_body.keys())[list(post_body.values()).index(post_body['owner_id'])] == 'owner_id' and list(post_body.keys())[list(post_body.values()).index(post_body['species_id'])] == 'species_id' and list(post_body.keys())[list(post_body.values()).index(post_body['gender'])] == 'gender' and list(post_body.keys())[list(post_body.values()).index(post_body['color'])] == 'color':
+                # key_test = True
+            #     self._set_headers(201)
+            #     new_resource = create_snake(post_body)
+            # else:
+            #     self._set_headers(400)
+            #     new_resource = f"Missing {}"
 
-        # elif resource == "locations":
-        #     new_resource = create_location(post_body)
 
-        # elif resource == "employees":
-        #     new_resource = create_employee(post_body)
+            if len(post_body) <= 4:
+                self._set_headers(400)
+                if 'name' not in post_body:
+                    new_resource = "Request Is Missing Required Property `name`"
+                elif 'owner_id' not in post_body:
+                    new_resource = "Request Is Missing Required Property `owner_id`"
+                elif 'species_id' not in post_body:
+                    new_resource = "Request Is Missing Required Property `species_id`"
+                elif 'gender' not in post_body:
+                    new_resource = "Request Is Missing Required Property `gender`"
+                elif 'color' not in post_body:
+                    new_resource = "Request Is Missing Required Property `color`"
 
-        # elif resource == "customers":
-        #     new_resource = create_customer(post_body)
+            elif len(post_body) == 5:
+                self._set_headers(201)
+                new_resource = create_snake(post_body)
+
+            elif len(post_body) >= 6:
+                self._set_headers(400)
+                new_resource = "Request Contains Too Many Properties"
+
+
+
 
         # Encode the new animal and send in response
         self.wfile.write(json.dumps(new_resource).encode())
