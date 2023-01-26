@@ -88,3 +88,23 @@ def get_single_snake(id):
         else:
             snake = Snake(data['id'], data['name'], data['owner_id'], data['species_id'], data['gender'], data['color'])
     return snake.__dict__
+
+def create_snake(new_snake):
+    with sqlite3.connect("./assessment.sqlite3") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        INSERT INTO Snakes
+            ( name, owner_id, species_id, gender, color )
+        VALUES
+            ( ?, ?, ?, ?, ?);
+        """, (new_snake['name'], new_snake['owner_id'],
+                new_snake['species_id'], new_snake['gender'],
+                new_snake['color'], ))
+
+        id = db_cursor.lastrowid
+
+        new_snake['id'] = id
+
+
+    return new_snake

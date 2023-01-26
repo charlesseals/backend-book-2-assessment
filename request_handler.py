@@ -1,7 +1,7 @@
 from urllib.parse import urlparse, parse_qs
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_specieses, get_single_species, get_single_snake, get_all_snakes
+from views import get_all_specieses, get_single_species, get_single_snake, get_all_snakes, create_snake
 
 # Here's a class. It inherits from another class.
 # For now, think of a class as a container for functions that
@@ -104,6 +104,31 @@ class HandleRequests(BaseHTTPRequestHandler):
 
 
 
+    def do_POST(self):
+        self._set_headers(201)
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = self.rfile.read(content_len)
+
+        post_body = json.loads(post_body)
+
+        (resource, id, query_params) = self.parse_url(self.path)
+
+        new_resource = None
+
+        if resource == "snakes":
+            new_resource = create_snake(post_body)
+
+        # elif resource == "locations":
+        #     new_resource = create_location(post_body)
+
+        # elif resource == "employees":
+        #     new_resource = create_employee(post_body)
+
+        # elif resource == "customers":
+        #     new_resource = create_customer(post_body)
+
+        # Encode the new animal and send in response
+        self.wfile.write(json.dumps(new_resource).encode())
 
 
 
